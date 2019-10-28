@@ -54,7 +54,21 @@ This is used to remove all the highlighted tokens.
 
 ## Customing Styles
 
-There are built in styles applied to classes. Each element has class and a matching ID. You can target the ID to override any styles for customization.
+
+### Highlight tokens
+
+All highlight tokens of matching searched text will be wrapped in a `<mark class="find-in-nw-token">searched text</mark>`. You can customize this by targeting the following
+
+```css
+mark.find-in-nw-token {
+    background-color: #00F;
+}
+```
+
+
+### Search Box
+
+Each element of the search box is styled by targeting a class. They also all have a matching ID that you can target to override them.
 
 ```css
 /* The container for the input/count/close */
@@ -69,3 +83,12 @@ There are built in styles applied to classes. Each element has class and a match
 /* The X close button */
 #find-in-nw-close {}
 ```
+
+
+
+
+## Contributing
+
+1. Create an issue first for your desired improvements and how you think they should be implemented.
+1. If plan is approved (or no response given in a timely manner), then you can submit a PR.
+1. Make sure to run `npm run validate` prior to submitting your PR and fix any errors or warnings.
