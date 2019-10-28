@@ -1,4 +1,4 @@
-# find-in-nw
+# "Find" in NW.js
 
 Adds "Ctrl+F" find box to highlight text in the DOM
 
@@ -9,10 +9,10 @@ Adds "Ctrl+F" find box to highlight text in the DOM
 
 ## Use
 
-1. `npm install --save find-in-nw`
+1. `npm install --save findinnw`
 1. In your HTML file add:
     ```html
-    <script src="node_modules/find-in-nw/dist/find-in-nw.js"></script>
+    <script src="node_modules/findinnw/dist/find-in-nw.js"></script>
     <script>
       findInNw.initialize();
     </script>
