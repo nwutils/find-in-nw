@@ -1,0 +1,13 @@
+node_modules/
+src/
+.editorconfig
+.eslintignore
+.eslintrc.js
+.gitignore
+.sass-lint.yml
+.travis.yml
+build.js
+dev.html
+find-in-nw.gif
+package-lock.json
+test.html

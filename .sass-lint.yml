@@ -1,0 +1,5 @@
+options:
+  config-file: node_modules/tjw-sasslint-rules/tjwsasslint.yml
+files:
+  # Note: You can change the '**/*.s+(a|c)ss' to be specific to your project's Sass folder. Example: 'src/sass/**/*.s+(a|c)ss'
+  include: '**/*.s+(a|c)ss'
