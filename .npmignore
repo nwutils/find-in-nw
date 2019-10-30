@@ -7,6 +7,7 @@ src/
 .sass-lint.yml
 .travis.yml
 build.js
+CODE_OF_CONDUCT.md
 dev.html
 find-in-nw.gif
 package-lock.json
