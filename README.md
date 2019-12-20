@@ -52,7 +52,7 @@ This is used to remove all the highlighted tokens.
 
 
 
-## Customing Styles
+## Customizing Styles
 
 
 ### Highlight tokens
