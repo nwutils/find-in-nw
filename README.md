@@ -17,7 +17,11 @@ Adds "Ctrl+F" find box to highlight text in the DOM
       findInNw.initialize();
     </script>
     ```
-1. Use `CTRL+F` and `ESC` to show/hide the search box
+1. Use `CTRL+F` to display and give focus to the search box
+1. After typing, press `ENTER` to go to highlight/scroll to the next match.
+1. Use `TAB` to navigate to the "previous", "next", and "close" buttons.
+1. Use `ENTER` or `SPACE` to activate a button when focused.
+1. User `ESC` to hide the search box and return focus to the body
 
 
 
@@ -45,6 +49,11 @@ This is used to programmitcally hide the search box. `ESC` will still hide it to
 This is used to programmitcally find text.
 
 
+### `findInNw.highlightNext();` and `findInNw.highlightPrevious();`
+
+This will highlight and scroll to the next or previous match.
+
+
 ### `findInNw.clearTokens();`
 
 This is used to remove all the highlighted tokens.
@@ -57,11 +66,21 @@ This is used to remove all the highlighted tokens.
 
 ### Highlight tokens
 
-All highlight tokens of matching searched text will be wrapped in a `<mark class="find-in-nw-token">searched text</mark>`. You can customize this by targeting the following
+All highlight tokens of matching searched text will be wrapped in a `<mark class="find-in-nw-token">searched text</mark>`.
+
+They will also contain a `data-find-in-nw-position="4"` data attribute, the number correlates to a zero-based index of all matches.
+
+As you navigate from one match to the next, the currently selected match will have a class of `.find-in-nw-current-token`.
+
+You can customize this by targeting the following
 
 ```css
 mark.find-in-nw-token {
     background-color: #00F;
+}
+
+mark.find-in-nw-current-token {
+    background-color: #38D878;
 }
 ```
 
@@ -77,10 +96,20 @@ Each element of the search box is styled by targeting a class. They also all hav
 /* The input field you type in */
 #find-in-nw-input {}
 
-/* The count of matching highlighted items */
+/* The current selected match number. Ex: The number 1 in "1/5" */
+#find-in-nw-current {}
+
+/* The separator between the current and count. Ex: The slash (/) in "1/5" */
+#find-in-nw-of {}
+
+/* The count of matching highlighted items. Ex: The number 5 in "1/5" */
 #find-in-nw-count {}
 
-/* The X close button */
+/* The previous and next buttons, ∧ and ∨ */
+#find-in-nw-previous {}
+#find-in-nw-next {}
+
+/* The × close button */
 #find-in-nw-close {}
 ```
 
