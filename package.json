@@ -1,6 +1,6 @@
 {
   "name": "findinnw",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simulate the Ctrl+F (find) feature from Chrome in NW.js",
   "main": "test.html",
   "scripts": {
