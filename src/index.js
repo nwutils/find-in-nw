@@ -2,6 +2,15 @@
 const findInNw = {
   initialized: false,
   lastSearched: '',
+  total: 0,
+  currentToken: 0,
+  dataAttribute: 'data-find-in-nw-position',
+
+  resetState: function () {
+    this.lastSearched = '';
+    this.total = 0;
+    this.currentToken = 0;
+  },
 
   create: {
     css: '/* PLACEHOLDER */',
@@ -27,42 +36,36 @@ const findInNw = {
 
       return input;
     },
-    count: function () {
-      const count = document.createElement('span');
-      count.setAttribute('id', 'find-in-nw-count');
-      count.setAttribute('class', 'find-in-nw-count');
-      count.innerHTML = '0';
+    element: function (el, id, value) {
+      const element = document.createElement(el);
+      element.setAttribute('id', 'find-in-nw-' + id);
+      element.setAttribute('class', 'find-in-nw-' + id);
+      element.innerHTML = value + '';
 
-      return count;
-    },
-    close: function () {
-      const button = document.createElement('button');
-      button.setAttribute('id', 'find-in-nw-close');
-      button.setAttribute('class', 'find-in-nw-close');
-      button.innerHTML = '&times;';
-
-      return button;
+      return element;
     },
 
     composeSearchBox: function () {
       const container = this.container();
-      const input = this.input();
-      const count = this.count();
-      const close = this.close();
 
-      container.appendChild(input);
-      container.appendChild(count);
-      container.appendChild(close);
+      container.appendChild(this.input());
+      container.appendChild(this.element('span', 'current', 0));
+      container.appendChild(this.element('span', 'of', '/'));
+      container.appendChild(this.element('span', 'count', 0));
+      container.appendChild(this.element('button', 'previous', '&and;'));
+      container.appendChild(this.element('button', 'next', '&or;'));
+      container.appendChild(this.element('button', 'close', '&times;'));
 
       return container;
     }
   },
 
-  closeButtonClicked: function () {
-    const close = document.getElementById('find-in-nw-close');
-    close.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      this.hideSearchBox();
+  keyDownPressed: function () {
+    const input = document.getElementById('find-in-nw-input');
+    input.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        this.highlightNext();
+      }
     }.bind(this));
   },
   inputChanged: function () {
@@ -77,10 +80,34 @@ const findInNw = {
       }
     }.bind(this));
   },
+  previousButtonClicked: function () {
+    const previous = document.getElementById('find-in-nw-previous');
+    previous.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      this.highlightPrevious();
+    }.bind(this));
+  },
+  nextButtonClicked: function () {
+    const next = document.getElementById('find-in-nw-next');
+    next.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      this.highlightNext();
+    }.bind(this));
+  },
+  closeButtonClicked: function () {
+    const close = document.getElementById('find-in-nw-close');
+    close.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      this.hideSearchBox();
+    }.bind(this));
+  },
 
   eventBinding: function () {
-    this.closeButtonClicked();
+    this.keyDownPressed();
     this.inputChanged();
+    this.previousButtonClicked();
+    this.nextButtonClicked();
+    this.closeButtonClicked();
   },
   keyBindings: function () {
     document.onkeydown = function (pressed) {
@@ -96,6 +123,23 @@ const findInNw = {
         return false;
       }
     }.bind(this);
+  },
+
+  highlightPrevious: function () {
+    this.currentToken = this.currentToken - 1;
+    if (this.currentToken < 0) {
+      this.currentToken = (this.total - 1);
+    }
+    this.updateCount();
+    this.highlightCurrentToken();
+  },
+  highlightNext: function () {
+    this.currentToken = this.currentToken + 1;
+    if (this.currentToken > (this.total - 1)) {
+      this.currentToken = 0;
+    }
+    this.updateCount();
+    this.highlightCurrentToken();
   },
 
   showSearchBox: function () {
@@ -129,10 +173,72 @@ const findInNw = {
     return elements;
   },
 
-  updateCount: function () {
+  setDataPositionAttribute: function () {
+    let index = 0;
+    let searchLength = this.lastSearched.length;
+    let tempLength = searchLength;
+
     const tokens = document.getElementsByClassName('find-in-nw-token');
+
+    [...tokens].forEach(function (token) {
+      let tokenLength = token.innerText.length;
+      token.setAttribute(this.dataAttribute, index);
+
+      if (tokenLength === searchLength) {
+        index = index + 1;
+        tempLength = searchLength;
+      } else {
+        tempLength = tempLength - tokenLength;
+        if (tempLength < 1) {
+          index = index + 1;
+          tempLength = searchLength;
+        }
+      }
+    }.bind(this));
+
+    if (!tokens) {
+      index = 0;
+    }
+    this.total = index;
+  },
+  highlightCurrentToken: function () {
+    const currentTokenClass = 'find-in-nw-current-token';
+
+    let previousTokens = document.getElementsByClassName(currentTokenClass);
+    let currentTokens = document.querySelectorAll('.find-in-nw-token[' + this.dataAttribute + '="' + this.currentToken + '"]');
+
+    if (previousTokens && previousTokens.length) {
+      previousTokens = [...previousTokens];
+      previousTokens.forEach(function (token) {
+        token.classList.remove(currentTokenClass);
+      });
+    }
+
+    if (currentTokens && currentTokens.length) {
+      currentTokens = [...currentTokens];
+      currentTokens.forEach(function (token) {
+        token.classList.add(currentTokenClass);
+      });
+
+      currentTokens[0].scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+        inline: 'center'
+      });
+    }
+  },
+
+  updateCount: function () {
+    const current = document.getElementById('find-in-nw-current');
     const count = document.getElementById('find-in-nw-count');
-    count.innerHTML = tokens.length.toLocaleString();
+
+    let currentValue = 0;
+    if (this.total !== 0) {
+      currentValue = this.currentToken + 1;
+    }
+
+    current.innerHTML = (currentValue).toLocaleString();
+    count.innerHTML = this.total.toLocaleString();
   },
   clearTokens: function () {
     const tokens = document.getElementsByClassName('find-in-nw-token');
@@ -149,7 +255,7 @@ const findInNw = {
       element.normalize();
     });
 
-    this.lastSearched = '';
+    this.resetState();
     this.updateCount();
   },
   search: function (text) {
@@ -165,7 +271,9 @@ const findInNw = {
     });
 
     this.lastSearched = text;
+    this.setDataPositionAttribute();
     this.updateCount();
+    this.highlightCurrentToken();
   },
   initialize: function () {
     if (!this.initialized) {
