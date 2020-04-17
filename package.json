@@ -2,7 +2,7 @@
   "name": "findinnw",
   "version": "1.1.0",
   "description": "Simulate the Ctrl+F (find) feature from Chrome in NW.js",
-  "main": "test.html",
+  "main": "dev.html",
   "scripts": {
     "start": "nw .",
     "build": "npm run validate && node build.js",
@@ -12,14 +12,6 @@
     "sassfix": "sass-lint-auto-fix -c .sass-lint.yml",
     "validate": "npm run lint && npm run sasslint"
   },
-  "keywords": [
-    "find",
-    "search",
-    "nw.js",
-    "desktop"
-  ],
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-tjw-base": "^1.0.0",
@@ -31,5 +23,13 @@
     "terser": "^4.6.11",
     "tjw-sasslint-rules": "^2.1.0"
   },
+  "author": "The Jared Wilcurt",
+  "license": "MIT",
+  "keywords": [
+    "find",
+    "search",
+    "nw.js",
+    "desktop"
+  ],
   "repository": "https://github.com/nwutils/find-in-nw"
 }
