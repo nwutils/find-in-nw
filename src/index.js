@@ -147,16 +147,21 @@ const findInNw = {
     const input = document.getElementById('find-in-nw-input');
 
     searchBox.classList.add('find-in-nw-search-box-visible');
+    const selectionText = window.getSelection().toString();
+    if (selectionText && selectionText.indexOf('\n') < 0) {
+      input.value = selectionText;
+    }
+    if (input.value) {
+      this.search(input.value);
+    }
     input.focus();
   },
   hideSearchBox: function () {
     const searchBox = document.getElementById('find-in-nw-search-box');
-    const input = document.getElementById('find-in-nw-input');
 
     searchBox.classList.remove('find-in-nw-search-box-visible');
     document.body.focus();
 
-    input.value = '';
     this.clearTokens();
   },
 
