@@ -1,3 +1,17 @@
+const table = {
+  find: [],
+  position: []
+};
+const start = {
+  find: 0,
+  position: 0
+};
+function timer (name) {
+  let diff = (new Date()) - start[name];
+  table[name].push(Math.round(diff));
+}
+
+
 // eslint-disable-next-line no-unused-vars
 const findInNw = {
   initialized: false,
@@ -113,6 +127,7 @@ const findInNw = {
       ) {
         this.debouncedSearch(value);
       } else if (!value) {
+        clearTimeout(this.debounceTimeout);
         this.clearTokens();
       }
     }.bind(this));
@@ -299,6 +314,7 @@ const findInNw = {
     this.clearTokens();
     const elements = this.getElementsToSearch();
 
+    start.find = new Date();
     elements.forEach(function (element) {
       window.findAndReplaceDOMText(element, {
         find: text,
@@ -306,11 +322,18 @@ const findInNw = {
         wrapClass: 'find-in-nw-token'
       });
     });
+    timer('find');
 
     this.lastSearched = text;
+
+    start.position = new Date();
     this.setDataPositionAttribute();
+    timer('position');
+
     this.updateCount();
     this.highlightCurrentToken();
+
+    console.table(table);
   },
   initialize: function (settings) {
     if (!this.initialized) {
