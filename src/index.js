@@ -147,6 +147,7 @@ const findInNw = {
     const input = document.getElementById('find-in-nw-input');
 
     searchBox.classList.add('find-in-nw-search-box-visible');
+
     const selectionText = window.getSelection().toString();
     if (selectionText && selectionText.indexOf('\n') < 0) {
       input.value = selectionText;
@@ -154,6 +155,7 @@ const findInNw = {
     if (input.value) {
       this.search(input.value);
     }
+
     input.focus();
   },
   hideSearchBox: function () {
