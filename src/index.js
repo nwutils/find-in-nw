@@ -158,10 +158,9 @@ const findInNw = {
   },
   hideSearchBox: function () {
     const searchBox = document.getElementById('find-in-nw-search-box');
-
     searchBox.classList.remove('find-in-nw-search-box-visible');
-    document.body.focus();
 
+    document.body.focus();
     this.clearTokens();
   },
 
