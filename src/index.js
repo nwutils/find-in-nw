@@ -269,11 +269,13 @@ const findInNw = {
     const elements = this.getElementsToSearch();
 
     elements.forEach(function (element) {
-      window.findAndReplaceDOMText(element, {
-        find: text,
-        wrap: 'mark',
-        wrapClass: 'find-in-nw-token'
-      });
+      if (element.id !== 'find-in-nw-search-box') {
+        window.findAndReplaceDOMText(element, {
+          find: text,
+          wrap: 'mark',
+          wrapClass: 'find-in-nw-token'
+        });
+      }
     });
 
     this.lastSearched = text;
