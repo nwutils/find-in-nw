@@ -1,6 +1,6 @@
 {
   "name": "findinnw",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "description": "Simulate the Ctrl+F (find) feature from Chrome in NW.js",
   "main": "test.html",
   "scripts": {
@@ -21,10 +21,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^6.8.0",
+    "eslint": "^7.0.0",
     "eslint-config-tjw-base": "^1.0.0",
     "findandreplacedomtext": "^0.4.6",
-    "node-sass": "^4.14.0",
+    "node-sass": "^4.14.1",
     "nw": "sdk",
     "sass": "^1.26.5",
     "sass-lint": "^1.13.1",
