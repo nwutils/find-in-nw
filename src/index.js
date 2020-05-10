@@ -177,6 +177,29 @@ const findInNw = {
     }.bind(this);
   },
 
+  initCurrentToken: function () {
+    // when mouse click page, change currentToken value
+    // when first show search box , currentToken display at the visible area
+    // this.currentToken = 0;
+    // https://stackoverflow.com/questions/123999/how-can-i-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
+    const isInViewport = function (elem) {
+      const bounding = elem.getBoundingClientRect();
+      return (
+        bounding.top >= 0 &&
+        bounding.left >= 0 &&
+        bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    };
+    const tokens = document.getElementsByClassName('find-in-nw-token');
+    for (const elem of tokens) {
+      if (isInViewport(elem)) {
+        this.currentToken = parseInt(elem.getAttribute(this.dataAttribute)) || 0;
+        break;
+      }
+    }
+  },
+
   highlightPrevious: function () {
     this.currentToken = this.currentToken - 1;
     if (this.currentToken < 0) {
@@ -322,11 +345,13 @@ const findInNw = {
 
     start.find = new Date();
     elements.forEach(function (element) {
-      window.findAndReplaceDOMText(element, {
-        find: text,
-        wrap: 'mark',
-        wrapClass: 'find-in-nw-token'
-      });
+      if (element.id !== 'find-in-nw-search-box') {
+        window.findAndReplaceDOMText(element, {
+          find: text,
+          wrap: 'mark',
+          wrapClass: 'find-in-nw-token'
+        });
+      }
     });
     timer('find');
 
@@ -334,8 +359,10 @@ const findInNw = {
 
     start.position = new Date();
     this.setDataPositionAttribute();
+
     timer('position');
 
+    this.initCurrentToken();
     this.updateCount();
     this.highlightCurrentToken();
 
