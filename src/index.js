@@ -1,3 +1,17 @@
+const table = {
+  find: [],
+  position: []
+};
+const start = {
+  find: 0,
+  position: 0
+};
+function timer (name) {
+  let diff = (new Date()) - start[name];
+  table[name].push(Math.round(diff));
+}
+
+
 // eslint-disable-next-line no-unused-vars
 const findInNw = {
   initialized: false,
@@ -5,11 +19,45 @@ const findInNw = {
   total: 0,
   currentToken: 0,
   dataAttribute: 'data-find-in-nw-position',
+  debounceAmount: 0,
+  debounceTimeout: null,
 
   resetState: function () {
     this.lastSearched = '';
     this.total = 0;
     this.currentToken = 0;
+  },
+
+  debouncedSearch: function (text) {
+    clearTimeout(this.debounceTimeout);
+
+    this.debounceTimeout = setTimeout(() => {
+      this.debounceTimeout = null;
+      this.search(text);
+    }, this.debounceAmount);
+  },
+  validateSettings: function (settings) {
+    if (
+      !settings ||
+      Array.isArray(settings) ||
+      typeof(settings) !== 'object'
+    ) {
+      settings = {};
+    }
+
+    if (
+      !settings.debounce ||
+      typeof(settings.debounce) !== 'number' ||
+      isNaN(settings.debounce)
+    ) {
+      settings.debounce = 0;
+    }
+
+    return settings;
+  },
+  applySettings: function (settings) {
+    settings = this.validateSettings(settings);
+    this.debounceAmount = settings.debounce;
   },
 
   create: {
@@ -73,9 +121,13 @@ const findInNw = {
     input.addEventListener('input', function (evt) {
       evt.preventDefault();
       const value = evt.target.value;
-      if (value && value !== this.lastSearched) {
-        this.search(value);
+      if (
+        value &&
+        value !== this.lastSearched
+      ) {
+        this.debouncedSearch(value);
       } else if (!value) {
+        clearTimeout(this.debounceTimeout);
         this.clearTokens();
       }
     }.bind(this));
@@ -291,6 +343,7 @@ const findInNw = {
     this.clearTokens();
     const elements = this.getElementsToSearch();
 
+    start.find = new Date();
     elements.forEach(function (element) {
       if (element.id !== 'find-in-nw-search-box') {
         window.findAndReplaceDOMText(element, {
@@ -300,14 +353,22 @@ const findInNw = {
         });
       }
     });
+    timer('find');
 
     this.lastSearched = text;
+
+    start.position = new Date();
     this.setDataPositionAttribute();
+
+    timer('position');
+
     this.initCurrentToken();
     this.updateCount();
     this.highlightCurrentToken();
+
+    console.table(table);
   },
-  initialize: function () {
+  initialize: function (settings) {
     if (!this.initialized) {
       const styleBlock = this.create.style();
       const searchBox = this.create.composeSearchBox();
@@ -315,6 +376,7 @@ const findInNw = {
       document.body.append(styleBlock);
       this.keyBindings();
       this.eventBinding();
+      this.applySettings(settings);
       this.initialized = true;
     }
   }
