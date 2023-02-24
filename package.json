@@ -1,10 +1,10 @@
 {
   "name": "findinnw",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "description": "Simulate the Ctrl+F (find) feature from Chrome in NW.js",
   "main": "test.html",
   "scripts": {
-    "start": "nw .",
+    "start": "node build.js && nw .",
     "build": "npm run validate && node build.js",
     "lint": "eslint --no-fix **/*.js",
     "fix": "eslint --fix **/*.js",
@@ -20,12 +20,15 @@
   ],
   "author": "TheJaredWilcurt",
   "license": "MIT",
+  "ManifestComments": [
+    "Pinned sass to 1.26.5 because newer versions break and their docs are fucking garbage"
+  ],
   "devDependencies": {
     "eslint": "^8.34.0",
     "eslint-config-tjw-base": "^2.0.0",
     "findandreplacedomtext": "^0.4.6",
     "nw": "sdk",
-    "sass": "^1.58.3",
+    "sass": "1.26.5",
     "sass-lint": "^1.13.1",
     "terser": "^5.16.5",
     "tjw-sasslint-rules": "^2.1.0"

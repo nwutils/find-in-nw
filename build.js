@@ -3,8 +3,6 @@ async function build () {
   const sass = require('sass');
   const uglify = require('terser');
 
-  console.log(uglify.minify);
-
   const sassOptions = {
     file: process.cwd() + '/src/index.sass',
     indentedSyntax: true,

@@ -29,9 +29,9 @@ Adds "Ctrl+F" find box to highlight text in the DOM
 ## API
 
 
-### `findInNw.initialize();`
+### `findInNw.initialize(options);`
 
-This is the initialization command. It must be ran once. Multiple attempts to run it are ignored.
+This is the initialization command. It must be ran once. You can pass any any options from [findAndReplaceDOMText](https://github.com/padolsey/findAndReplaceDOMText#options).
 
 
 ### `findInNw.showSearchBox();`
@@ -105,6 +105,9 @@ Each element of the search box is styled by targeting a class. They also all hav
 /* The count of matching highlighted items. Ex: The number 5 in "1/5" */
 #find-in-nw-count {}
 
+/* The case sensitivty toggle, Ex: Aa button */
+#find-in-nw-case-sensitive {}
+
 /* The previous and next buttons, ∧ and ∨ */
 #find-in-nw-previous {}
 #find-in-nw-next {}
@@ -112,8 +115,6 @@ Each element of the search box is styled by targeting a class. They also all hav
 /* The × close button */
 #find-in-nw-close {}
 ```
-
-
 
 
 ## Contributing

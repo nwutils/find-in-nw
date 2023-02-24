@@ -32,6 +32,7 @@ $height: 32px
         margin: 0px
         padding: 0px 0px 0px 3px
         font-size: 16px
+    &-case-sensitive,
     &-previous,
     &-next,
     &-close
@@ -47,6 +48,7 @@ $height: 32px
     &-search-box,
     &-input,
     &-count,
+    &-case-sensitive,
     &-previous,
     &-next,
     &-close
@@ -56,16 +58,26 @@ $height: 32px
         line-height: $height
         vertical-align: top
     &-input,
+    &-case-sensitive,
     &-previous,
     &-next,
     &-close
         &:focus
             opacity: 1.0
             outline: none
+    &-case-sensitive
+        font-size: 20px
+        &:focus,
+        &:hover
+            opacity: 0.5
     &-previous,
     &-next
         font-size: $height - 2
         transform: scale(1.5, 0.7)
+    &-button-active,
+    &-button-active:focus,
+    &-button-active:hover
+        opacity: 1.0
     &-count
         margin-right: 8px
     &-token

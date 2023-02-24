@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const findInNw = {
+  caseSensitive: false,
   initialized: false,
   lastSearched: '',
   total: 0,
@@ -13,6 +14,7 @@ const findInNw = {
   },
 
   create: {
+    options: {},
     css: '/* PLACEHOLDER */',
     style: function () {
       const styleBlock = document.createElement('style');
@@ -52,6 +54,7 @@ const findInNw = {
       container.appendChild(this.element('span', 'current', 0));
       container.appendChild(this.element('span', 'of', '/'));
       container.appendChild(this.element('span', 'count', 0));
+      container.appendChild(this.element('button', 'case-sensitive', 'Aa'));
       container.appendChild(this.element('button', 'previous', '&and;'));
       container.appendChild(this.element('button', 'next', '&or;'));
       container.appendChild(this.element('button', 'close', '&times;'));
@@ -101,6 +104,22 @@ const findInNw = {
       this.hideSearchBox();
     }.bind(this));
   },
+  caseSensitiveButtonClicked: function () {
+    const button = document.getElementById('find-in-nw-case-sensitive');
+    const activeClass = 'find-in-nw-button-active';
+    const input = document.getElementById('find-in-nw-input');
+    button.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      if (this.caseSensitive) {
+        this.caseSensitive = false;
+        button.classList.remove(activeClass);
+      } else {
+        this.caseSensitive = true;
+        button.classList.add(activeClass);
+      }
+      this.search(input.value);
+    }.bind(this));
+  },
 
   eventBinding: function () {
     this.keyDownPressed();
@@ -108,6 +127,7 @@ const findInNw = {
     this.previousButtonClicked();
     this.nextButtonClicked();
     this.closeButtonClicked();
+    this.caseSensitiveButtonClicked();
   },
   keyBindings: function () {
     document.onkeydown = function (pressed) {
@@ -290,13 +310,19 @@ const findInNw = {
   search: function (text) {
     this.clearTokens();
     const elements = this.getElementsToSearch();
+    const options = this.create.options;
+    let caseInsensitive = 'i';
+    if (this.caseSensitive) {
+      caseInsensitive = '';
+    }
 
     elements.forEach(function (element) {
       if (element.id !== 'find-in-nw-search-box') {
         window.findAndReplaceDOMText(element, {
-          find: text,
+          find: RegExp(text, 'g' + caseInsensitive),
           wrap: 'mark',
-          wrapClass: 'find-in-nw-token'
+          wrapClass: 'find-in-nw-token',
+          ...options
         });
       }
     });
@@ -307,7 +333,15 @@ const findInNw = {
     this.updateCount();
     this.highlightCurrentToken();
   },
-  initialize: function () {
+  initialize: function (options) {
+    if (typeof(options) === 'object' && !Array.isArray(options)) {
+      this.create.options = options;
+    } else {
+      if (options) {
+        console.log('find-in-nw: Options must be an object or undefined');
+      }
+      this.create.options = {};
+    }
     if (!this.initialized) {
       const styleBlock = this.create.style();
       const searchBox = this.create.composeSearchBox();
