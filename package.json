@@ -18,17 +18,16 @@
     "nw.js",
     "desktop"
   ],
-  "author": "",
+  "author": "TheJaredWilcurt",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^7.0.0",
-    "eslint-config-tjw-base": "^1.0.0",
+    "eslint": "^8.34.0",
+    "eslint-config-tjw-base": "^2.0.0",
     "findandreplacedomtext": "^0.4.6",
-    "node-sass": "^4.14.1",
     "nw": "sdk",
-    "sass": "^1.26.5",
+    "sass": "^1.58.3",
     "sass-lint": "^1.13.1",
-    "terser": "^4.6.13",
+    "terser": "^5.16.5",
     "tjw-sasslint-rules": "^2.1.0"
   },
   "repository": "https://github.com/nwutils/find-in-nw"

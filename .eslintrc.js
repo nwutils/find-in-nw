@@ -1,11 +1,16 @@
+/**
+ * @file    Linting rules, plugins, and configurations
+ * @author  TheJaredWilcurt
+ */
+
 module.exports = {
-  'parserOptions': {
-    'ecmaVersion': 2015
+  parserOptions: {
+    ecmaVersion: 2022
   },
-  'env': {
-    'es6': true
+  env: {
+    es6: true
   },
-  'extends': [
+  extends: [
     'tjw-base'
   ]
 };
