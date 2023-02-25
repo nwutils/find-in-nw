@@ -6,6 +6,7 @@ const findInNw = {
   total: 0,
   currentToken: 0,
   dataAttribute: 'data-find-in-nw-position',
+  observer: null,
 
   resetState: function () {
     this.lastSearched = '';
@@ -46,7 +47,6 @@ const findInNw = {
 
       return element;
     },
-
     composeSearchBox: function () {
       const container = this.container();
 
@@ -101,6 +101,7 @@ const findInNw = {
     const close = document.getElementById('find-in-nw-close');
     close.addEventListener('click', function (evt) {
       evt.preventDefault();
+      this.stopObservingDomChanges();
       this.hideSearchBox();
     }.bind(this));
   },
@@ -110,6 +111,7 @@ const findInNw = {
     const input = document.getElementById('find-in-nw-input');
     button.addEventListener('click', function (evt) {
       evt.preventDefault();
+      this.stopObservingDomChanges();
       if (this.caseSensitive) {
         this.caseSensitive = false;
         button.classList.remove(activeClass);
@@ -144,10 +146,28 @@ const findInNw = {
       }
     }.bind(this);
   },
+  observeDomChanges: function () {
+    MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+    this.observer = new MutationObserver(function (mutations, observer) {
+      if (this.initialized) {
+        this.search(this.lastSearched);
+      }
+    }.bind(this));
+
+    this.observer.observe(document, {
+      subtree: true,
+      attributes: true,
+      characterData: true
+    });
+  },
+  stopObservingDomChanges: function () {
+    this.observer && this.observer.disconnect && this.observer.disconnect();
+  },
 
   initCurrentToken: function () {
-    // when mouse click page, change currentToken value
-    // when first show search box , currentToken display at the visible area
+    this.stopObservingDomChanges();
+    // When you click the page, change currentToken value
+    // When first showing search box, currentToken set to the visible area
     // this.currentToken = 0;
     // https://stackoverflow.com/questions/123999/how-can-i-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
     const isInViewport = function (elem) {
@@ -169,6 +189,7 @@ const findInNw = {
   },
 
   highlightPrevious: function () {
+    this.stopObservingDomChanges();
     this.currentToken = this.currentToken - 1;
     if (this.currentToken < 0) {
       this.currentToken = (this.total - 1);
@@ -177,6 +198,7 @@ const findInNw = {
     this.highlightCurrentToken();
   },
   highlightNext: function () {
+    this.stopObservingDomChanges();
     this.currentToken = this.currentToken + 1;
     if (this.currentToken > (this.total - 1)) {
       this.currentToken = 0;
@@ -186,6 +208,7 @@ const findInNw = {
   },
 
   showSearchBox: function () {
+    this.stopObservingDomChanges();
     const searchBox = document.getElementById('find-in-nw-search-box');
     const input = document.getElementById('find-in-nw-input');
 
@@ -202,6 +225,7 @@ const findInNw = {
     input.focus();
   },
   hideSearchBox: function () {
+    this.stopObservingDomChanges();
     const searchBox = document.getElementById('find-in-nw-search-box');
     searchBox.classList.remove('find-in-nw-search-box-visible');
 
@@ -213,8 +237,19 @@ const findInNw = {
     const elements = [];
 
     for (let i = 0; i < document.body.children.length; i++) {
-      let child = document.body.children[i];
-      if (child.tagName.toLowerCase() !== 'style' && child.tagName.toLowerCase() !== 'script') {
+      const child = document.body.children[i];
+
+      const isStyleTag = child.tagName.toLowerCase() === 'style';
+      const isScriptTag = child.tagName.toLowerCase() === 'script';
+      const isSeachBox = child.id && child.id === 'find-in-nw-search-box';
+      const isVisible = child.offsetWidth > 0 && child.offsetHeight > 0;
+
+      if (
+        !isStyleTag &&
+        !isScriptTag &&
+        !isSeachBox &&
+        isVisible
+      ) {
         elements.push(child);
       }
     }
@@ -223,6 +258,7 @@ const findInNw = {
   },
 
   setDataPositionAttribute: function () {
+    this.stopObservingDomChanges();
     let index = 0;
     let searchLength = this.lastSearched.length;
     let tempLength = searchLength;
@@ -251,6 +287,7 @@ const findInNw = {
     this.total = index;
   },
   highlightCurrentToken: function () {
+    this.stopObservingDomChanges();
     const currentTokenClass = 'find-in-nw-current-token';
 
     let previousTokens = document.getElementsByClassName(currentTokenClass);
@@ -278,6 +315,7 @@ const findInNw = {
   },
 
   updateCount: function () {
+    this.stopObservingDomChanges();
     const current = document.getElementById('find-in-nw-current');
     const count = document.getElementById('find-in-nw-count');
 
@@ -290,6 +328,7 @@ const findInNw = {
     count.innerHTML = this.total.toLocaleString();
   },
   clearTokens: function () {
+    this.stopObservingDomChanges();
     const tokens = document.getElementsByClassName('find-in-nw-token');
     let parents = [];
     for (let i = 0; i < tokens.length; i++) {
@@ -308,6 +347,7 @@ const findInNw = {
     this.updateCount();
   },
   search: function (text) {
+    this.stopObservingDomChanges();
     this.clearTokens();
     const elements = this.getElementsToSearch();
     const options = this.create.options;
@@ -316,22 +356,23 @@ const findInNw = {
       caseInsensitive = '';
     }
 
-    elements.forEach(function (element) {
-      if (element.id !== 'find-in-nw-search-box') {
+    if (text) {
+      elements.forEach(function (element) {
         window.findAndReplaceDOMText(element, {
           find: RegExp(text, 'g' + caseInsensitive),
           wrap: 'mark',
           wrapClass: 'find-in-nw-token',
           ...options
         });
-      }
-    });
+      });
+    }
 
     this.lastSearched = text;
     this.setDataPositionAttribute();
     this.initCurrentToken();
     this.updateCount();
     this.highlightCurrentToken();
+    this.observeDomChanges();
   },
   initialize: function (options) {
     if (typeof(options) === 'object' && !Array.isArray(options)) {
