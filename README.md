@@ -117,6 +117,8 @@ Each element of the search box is styled by targeting a class. They also all hav
 ```
 
 
+
+
 ## Contributing
 
 1. Create an issue first for your desired improvements and how you think they should be implemented.
