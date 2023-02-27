@@ -31,7 +31,29 @@ Adds "Ctrl+F" find box to highlight text in the DOM
 
 ### `findInNw.initialize(options);`
 
-This is the initialization command. It must be ran once. You can pass any any options from [findAndReplaceDOMText](https://github.com/padolsey/findAndReplaceDOMText#options).
+This is the initialization command. It must be ran once. You can pass in an options object documented below:
+
+#### options
+
+Option            | Type             | Description
+:--               | :--              | :--
+`verbose`         | Boolean          | Console logs information, included mutations that re-trigger searches
+`classesToIgnore` | Array of Strings | List of class names to ignore when deciding to re-trigger searches automatically when the DOM changes
+`idsToIgnore`     | Array of Strings | List of IDs to ignore when deciding to re-trigger searches automatically when the DOM changes
+`passThrough`     | Object           | Any [findAndReplaceDOMText](https://github.com/padolsey/findAndReplaceDOMText#options) options
+
+**Note:** If you notice the search box is acting funny (the "Next"/"Previous" buttons aren't working as expected for example), then most likely there are DOM changes occurring that are re-triggering the search to display accurate results. This causes the "current" highlighted item to be reset. You should turn on `verbose`, then look at the mutations logged when the funny behavior occurs. Each mutation has a `target` (the element that changed). You can add that targeted element's ID or classname to the array of `classesToIgnore` or `idsToIgnore`. This should stop the funny behavior.
+
+**Example:**
+
+```js
+findInNw.initialize({
+  verbose: true,
+  classesToIgnore: ['tooltip', 'tabCount'],
+  idsToIgnore: ['back-to-top'],
+  passThrough: {}
+});
+```
 
 
 ### `findInNw.showSearchBox();`
