@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-const findInNw = {
+window.findInNw = {
   options: {},
   caseSensitive: false,
   initialized: false,
